@@ -60,19 +60,25 @@ def train_model(cont=False):
 
     # training function for one example
     def train(category_tensor, line_tensor):
-        hidden = rnn.init_hidden()
 
+        # create a zeroed initial hidden state
+        hidden = rnn.init_hidden()
         rnn.zero_grad()
 
+        # iterate over each character in the line
         for i in range(line_tensor.size()[0]):
+            # get the output and the next hidden state
             output, hidden = rnn(line_tensor[i], hidden)
 
+        # calculate the loss, and backpropagate
         loss = criterion(output, category_tensor)
         loss.backward()
 
+        # update the weights
         for p in rnn.parameters():
             p.data.add_(p.grad.data, alpha=-learning_rate)
 
+        # return the output and the loss'
         return output, loss.item()
 
 
